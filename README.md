@@ -5,18 +5,23 @@ Benchmark and health-check SOCKS5 proxies from the command line.
 ## Quick start
 
 ```bash
+# macOS
+brew install pipx && pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+
+# Linux
+python3 -m pip install pipx && pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+
+# Windows
 pip install git+https://github.com/ProxyHatCom/socks5-bench.git
+```
+
+Then:
+
+```bash
 socks5-bench run
 ```
 
-The `run` command prompts for your proxy and runs all checks automatically. Paste a proxy in any common format:
-
-```
-socks5://user:pass@host:port
-user:pass@host:port
-host:port:user:pass
-host:port
-```
+Paste your proxy in any format and the tool runs all checks automatically:
 
 ```
 $ socks5-bench run
@@ -40,7 +45,7 @@ socks5-bench interactive mode
 ┌──────────────────────┬────────┬─────────┬──────────────┬─────────┐
 │ Proxy                │ Status │ Latency │ IP           │ Country │
 ├──────────────────────┼────────┼─────────┼──────────────┼─────────┤
-│ gate.example.com:1080│ OK     │  412ms  │ 74.89.46.126 │ US      │
+│ gate.example.com:1080│ OK     │   412ms │ 74.89.46.126 │ US      │
 └──────────────────────┴────────┴─────────┴──────────────┴─────────┘
 
 ───────────────────── 2/3 Benchmark ───────────────────────
@@ -77,24 +82,34 @@ If you route traffic through SOCKS5 proxies, you need answers to basic questions
 
 ## Install
 
+**macOS** (Homebrew Python blocks global pip — use pipx):
+
+```bash
+brew install pipx
+pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+```
+
+**Linux:**
+
+```bash
+python3 -m pip install pipx
+pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+```
+
+**Windows:**
+
 ```bash
 pip install git+https://github.com/ProxyHatCom/socks5-bench.git
 ```
 
-Or clone and install locally:
-
-```bash
-git clone https://github.com/ProxyHatCom/socks5-bench.git
-cd socks5-bench
-pip install .
-```
-
-Or with Docker:
+**Docker:**
 
 ```bash
 docker build -t socks5-bench .
-docker run --rm socks5-bench check -p user:pass@proxy.example.com:1080
+docker run --rm -it socks5-bench run
 ```
+
+> After installing with pipx or pip, the `socks5-bench` command is available globally — no need to activate a venv.
 
 ## Usage
 

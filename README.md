@@ -8,7 +8,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-3776ab.svg)](https://www.python.org)
 [![SOCKS5](https://img.shields.io/badge/protocol-SOCKS5-48a9a6.svg)](#)
 
-[Installation](#install) · [Usage](#usage) · [Options](#options) · [Config file](#config-file) · [JSON export](#json-export)
+[Web Demo](https://proxyhatcom.github.io/socks5-bench) · [Installation](#install) · [Usage](#usage) · [Options](#options) · [Config file](#config-file) · [JSON export](#json-export)
 
 </div>
 

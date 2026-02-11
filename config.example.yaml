@@ -1,0 +1,12 @@
+proxies:
+  - label: datacenter-1
+    host: gate.example.com
+    port: 1080
+    username: user
+    password: pass
+
+  - label: residential-1
+    host: res.example.com
+    port: 1080
+    username: user
+    password: pass

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "socks5-bench"
-version = "1.0.0"
+version = "1.1.0"
 description = "Benchmark and health-check SOCKS5 proxies from the command line."
 readme = "README.md"
 license = {text = "MIT"}

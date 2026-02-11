@@ -2,6 +2,68 @@
 
 Benchmark and health-check SOCKS5 proxies from the command line.
 
+## Quick start
+
+```bash
+pip install git+https://github.com/ProxyHatCom/socks5-bench.git
+socks5-bench run
+```
+
+The `run` command prompts for your proxy and runs all checks automatically. Paste a proxy in any common format:
+
+```
+socks5://user:pass@host:port
+user:pass@host:port
+host:port:user:pass
+host:port
+```
+
+```
+$ socks5-bench run
+
+socks5-bench interactive mode
+
+  Paste a full proxy string or enter details manually.
+  Accepted formats:
+    socks5://user:pass@host:port
+    user:pass@host:port
+    host:port:user:pass
+    host:port
+
+  Proxy: user:pass@gate.example.com:1080
+  Parsed: gate.example.com:1080 (with auth)
+
+  Testing gate.example.com:1080 ...
+
+──────────────────── 1/3 Health Check ─────────────────────
+                    Proxy Health Check
+┌──────────────────────┬────────┬─────────┬──────────────┬─────────┐
+│ Proxy                │ Status │ Latency │ IP           │ Country │
+├──────────────────────┼────────┼─────────┼──────────────┼─────────┤
+│ gate.example.com:1080│ OK     │  412ms  │ 74.89.46.126 │ US      │
+└──────────────────────┴────────┴─────────┴──────────────┴─────────┘
+
+───────────────────── 2/3 Benchmark ───────────────────────
+  10 requests, concurrency 3
+
+                       Proxy Benchmark
+┌──────────────────────┬─────────┬───────┬───────┬───────┬───────┬─────┐
+│ Proxy                │ OK/Fail │  Rate │   Avg │   P50 │   P95 │ IPs │
+├──────────────────────┼─────────┼───────┼───────┼───────┼───────┼─────┤
+│ gate.example.com:1080│    10/0 │ 100%  │ 438ms │ 425ms │ 512ms │   1 │
+└──────────────────────┴─────────┴───────┴───────┴───────┴───────┴─────┘
+
+──────────────────── 3/3 IP Rotation ──────────────────────
+  20 requests, concurrency 5
+
+                      IP Rotation Test
+┌──────────────────────┬──────────┬────────────┬──────────┬───────────┐
+│ Proxy                │ Requests │ Unique IPs │ Rotation │ Countries │
+├──────────────────────┼──────────┼────────────┼──────────┼───────────┤
+│ gate.example.com:1080│    20/20 │         16 │    80.0% │ US(20)    │
+└──────────────────────┴──────────┴────────────┴──────────┴───────────┘
+```
+
 ## Why
 
 If you route traffic through SOCKS5 proxies, you need answers to basic questions before putting them into production:
@@ -16,6 +78,14 @@ If you route traffic through SOCKS5 proxies, you need answers to basic questions
 ## Install
 
 ```bash
+pip install git+https://github.com/ProxyHatCom/socks5-bench.git
+```
+
+Or clone and install locally:
+
+```bash
+git clone https://github.com/ProxyHatCom/socks5-bench.git
+cd socks5-bench
 pip install .
 ```
 
@@ -27,6 +97,14 @@ docker run --rm socks5-bench check -p user:pass@proxy.example.com:1080
 ```
 
 ## Usage
+
+### Interactive mode (easiest)
+
+```bash
+socks5-bench run
+```
+
+Prompts for proxy details, then runs health check, benchmark, and rotation test automatically.
 
 ### Health check
 
@@ -84,43 +162,6 @@ proxies:
     password: pass
 ```
 
-## Example output
-
-### `socks5-bench check`
-
-```
-             Proxy Health Check
-┌────────────────┬────────┬─────────┬─────────────────┬─────────┬───────┐
-│ Proxy          │ Status │ Latency │ IP              │ Country │ Error │
-├────────────────┼────────┼─────────┼─────────────────┼─────────┼───────┤
-│ datacenter-1   │ OK     │  245ms  │ 185.23.x.x      │ --      │       │
-│ residential-1  │ OK     │  891ms  │ 92.118.x.x      │ --      │       │
-└────────────────┴────────┴─────────┴─────────────────┴─────────┴───────┘
-```
-
-### `socks5-bench bench`
-
-```
-                           Proxy Benchmark
-┌────────────────┬─────────┬───────┬────────┬────────┬────────┬─────┬──────────────┐
-│ Proxy          │ OK/Fail │  Rate │    Avg │    P50 │    P95 │ IPs │ Errors       │
-├────────────────┼─────────┼───────┼────────┼────────┼────────┼─────┼──────────────┤
-│ datacenter-1   │    10/0 │ 100%  │  245ms │  238ms │  312ms │   1 │              │
-│ residential-1  │     9/1 │  90%  │  892ms │  845ms │ 1241ms │   3 │ TimeoutError │
-└────────────────┴─────────┴───────┴────────┴────────┴────────┴─────┴──────────────┘
-```
-
-### `socks5-bench rotate`
-
-```
-                         IP Rotation Test
-┌────────────────┬──────────┬────────────┬──────────┬──────────────────┐
-│ Proxy          │ Requests │ Unique IPs │ Rotation │ Countries        │
-├────────────────┼──────────┼────────────┼──────────┼──────────────────┤
-│ residential-1  │    18/20 │         14 │    77.8% │ US(9), DE(5), …  │
-└────────────────┴──────────┴────────────┴──────────┴──────────────────┘
-```
-
 ## Metrics
 
 | Metric | Description |
@@ -176,6 +217,8 @@ socks5-bench bench -c proxyhat.yaml -n 20 -j 5
 ## Development
 
 ```bash
+git clone https://github.com/ProxyHatCom/socks5-bench.git
+cd socks5-bench
 pip install -e ".[dev]"
 pytest
 ```

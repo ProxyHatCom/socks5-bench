@@ -10,6 +10,7 @@ from aiohttp_socks import ProxyConnector
 from socks5_bench.models import BenchmarkResult, Proxy, ProbeResult, RotationResult
 
 DEFAULT_TARGET = "https://httpbin.org/ip"
+GEO_TARGET = "http://ip-api.com/json"
 
 
 def _extract_ip(body: dict) -> Optional[str]:

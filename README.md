@@ -1,27 +1,20 @@
+<div align="center">
+
 # socks5-bench
 
-Benchmark and health-check SOCKS5 proxies from the command line.
+**Benchmark and health-check SOCKS5 proxies from the command line.**
 
-## Quick start
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-3776ab.svg)](https://www.python.org)
+[![SOCKS5](https://img.shields.io/badge/protocol-SOCKS5-48a9a6.svg)](#)
 
-```bash
-# macOS
-brew install pipx && pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+[Installation](#install) · [Usage](#usage) · [Options](#options) · [Config file](#config-file) · [JSON export](#json-export)
 
-# Linux
-python3 -m pip install pipx && pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+</div>
 
-# Windows
-pip install git+https://github.com/ProxyHatCom/socks5-bench.git
-```
+---
 
-Then:
-
-```bash
-socks5-bench run
-```
-
-Paste your proxy in any format and the tool runs all checks automatically:
+One command. Paste a proxy. Get latency stats, success rates, and IP rotation metrics.
 
 ```
 $ socks5-bench run
@@ -71,55 +64,55 @@ socks5-bench interactive mode
 
 ## Why
 
-If you route traffic through SOCKS5 proxies, you need answers to basic questions before putting them into production:
+If you route traffic through SOCKS5 proxies you need answers before putting them into production:
 
 - **Are they alive?** Can the proxy connect and return a response?
-- **How fast are they?** What's the p50/p95 latency under load?
+- **How fast?** What's the p50 / p95 latency under concurrent load?
 - **Are they reliable?** What's the success rate over N requests?
-- **Do they rotate?** How many unique IPs do you get across requests?
+- **Do they rotate?** How many unique exit IPs do you get?
 
-`socks5-bench` answers all of these in a single CLI tool. It works with **any SOCKS5 proxy provider**.
+`socks5-bench` answers all four in one tool. Works with **any SOCKS5 provider** — no vendor lock-in.
 
 ## Install
 
-**macOS** (Homebrew Python blocks global pip — use pipx):
+**macOS**
 
 ```bash
-brew install pipx
-pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+brew install pipx && pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
 ```
 
-**Linux:**
+**Linux**
 
 ```bash
-python3 -m pip install pipx
-pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
+python3 -m pip install pipx && pipx install git+https://github.com/ProxyHatCom/socks5-bench.git
 ```
 
-**Windows:**
+**Windows**
 
 ```bash
 pip install git+https://github.com/ProxyHatCom/socks5-bench.git
 ```
 
-**Docker:**
+**Docker**
 
 ```bash
 docker build -t socks5-bench .
 docker run --rm -it socks5-bench run
 ```
 
-> After installing with pipx or pip, the `socks5-bench` command is available globally — no need to activate a venv.
+> After install the `socks5-bench` command is available globally — no venv needed.
 
 ## Usage
 
-### Interactive mode (easiest)
+### Interactive mode
+
+The fastest way to test a proxy. Paste it in any format, the tool does the rest:
 
 ```bash
 socks5-bench run
 ```
 
-Prompts for proxy details, then runs health check, benchmark, and rotation test automatically.
+Runs health check → benchmark → IP rotation test in sequence.
 
 ### Health check
 
@@ -133,7 +126,7 @@ socks5-bench check -c proxies.yaml
 
 ### Benchmark
 
-Measure latency distribution and reliability over multiple requests:
+Measure latency distribution and reliability under load:
 
 ```bash
 socks5-bench bench -p user:pass@gate.example.com:1080 -n 20 -j 5
@@ -142,7 +135,7 @@ socks5-bench bench -c proxies.yaml --rounds 50 --concurrency 10
 
 ### Rotation test
 
-Check how many unique IPs a rotating proxy returns:
+Count unique exit IPs across requests:
 
 ```bash
 socks5-bench rotate -p user:pass@gate.example.com:1080 -n 30
@@ -151,16 +144,18 @@ socks5-bench rotate -p user:pass@gate.example.com:1080 -n 30
 ## Options
 
 | Flag | Short | Default | Description |
-|------|-------|---------|-------------|
-| `--config` | `-c` | -- | Config file (YAML or JSON) |
-| `--proxy` | `-p` | -- | Proxy as `host:port` or `user:pass@host:port` |
-| `--target` | `-t` | `https://httpbin.org/ip` | URL to request through the proxy |
-| `--rounds` | `-n` | 10 / 20 | Requests per proxy (bench / rotate) |
-| `--concurrency` | `-j` | 3 / 5 | Concurrent requests (bench / rotate) |
-| `--timeout` | | 10s | Request timeout |
-| `--output` | `-o` | -- | Export results as JSON |
+|---|---|---|---|
+| `--proxy` | `-p` | — | Proxy as `host:port` or `user:pass@host:port` |
+| `--config` | `-c` | — | Config file (YAML or JSON) |
+| `--target` | `-t` | `httpbin.org/ip` | URL to request through the proxy |
+| `--rounds` | `-n` | `10` / `20` | Requests per proxy (bench / rotate) |
+| `--concurrency` | `-j` | `3` / `5` | Parallel requests (bench / rotate) |
+| `--timeout` | | `10s` | Per-request timeout |
+| `--output` | `-o` | — | Export results to JSON file |
 
 ## Config file
+
+Test multiple proxies from a YAML or JSON file:
 
 ```yaml
 proxies:
@@ -177,14 +172,18 @@ proxies:
     password: pass
 ```
 
+```bash
+socks5-bench bench -c proxies.yaml -n 20 -j 5
+```
+
 ## Metrics
 
-| Metric | Description |
-|--------|-------------|
-| **Latency (avg / p50 / p95)** | Round-trip time through the proxy to the target URL. P50 is the median. P95 captures tail latency. |
+| Metric | What it tells you |
+|---|---|
+| **Avg / P50 / P95 latency** | Round-trip time through the proxy. P50 = median, P95 = tail latency. |
 | **Success rate** | Percentage of requests that returned HTTP 200. |
-| **Unique IPs** | Number of distinct exit IPs observed. Static proxies should show 1. Rotating proxies should show more. |
-| **Rotation ratio** | Unique IPs / successful requests. 100% means every request exited through a different IP. |
+| **Unique IPs** | Distinct exit IPs observed. Static proxies → 1. Rotating → more. |
+| **Rotation ratio** | Unique IPs ÷ successful requests. 100% = every request used a different IP. |
 
 ## JSON export
 
@@ -200,8 +199,6 @@ socks5-bench bench -c proxies.yaml -o results.json
     "successful": 10,
     "failed": 0,
     "success_rate": 100.0,
-    "latency_min_ms": 198.3,
-    "latency_max_ms": 312.4,
     "latency_avg_ms": 245.3,
     "latency_p50_ms": 238.1,
     "latency_p95_ms": 312.4,
@@ -212,9 +209,9 @@ socks5-bench bench -c proxies.yaml -o results.json
 ]
 ```
 
-## Example: ProxyHat configuration
+## Provider example
 
-This tool works with any SOCKS5 proxy provider. Here's an example using [ProxyHat](https://proxyhat.com/?utm_source=github&utm_medium=repo&utm_campaign=socks5-bench):
+This tool is provider-agnostic. Here's a sample config using [ProxyHat](https://proxyhat.com/?utm_source=github&utm_medium=repo&utm_campaign=socks5-bench):
 
 ```yaml
 proxies:
@@ -223,10 +220,6 @@ proxies:
     port: 1080
     username: your-username
     password: your-password
-```
-
-```bash
-socks5-bench bench -c proxyhat.yaml -n 20 -j 5
 ```
 
 ## Development
@@ -240,4 +233,4 @@ pytest
 
 ## License
 
-MIT
+[MIT](LICENSE)
